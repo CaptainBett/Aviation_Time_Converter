@@ -38,7 +38,8 @@
   </div>
 
   <script>
-    const API_URL = "http://127.0.0.1:5000/api/convert";
+    // Use a relative URL so it works both locally and on Vercel
+    const API_URL = "/api/convert";
 
     document.getElementById("convertBtn").addEventListener("click", async () => {
       const input = document.getElementById("timeInput").value;

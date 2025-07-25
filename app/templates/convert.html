@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aviation Time Converter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-600 flex items-center justify-center p-4">
+
+  <div class="glass max-w-md w-full p-8 rounded-2xl shadow-2xl text-white space-y-6">
+    <h1 class="text-3xl font-bold text-center">⏱️ Aviation Time Converter</h1>
+    
+    <label class="block">
+      <span class="text-sm">Enter Time</span>
+      <input id="timeInput"
+             type="text"
+             placeholder="e.g. 7:30 pm, 0000hrs"
+             class="mt-1 block w-full p-3 rounded-lg bg-white bg-opacity-20 focus:ring-2 focus:ring-indigo-300 outline-none text-white placeholder-white/60"/>
+    </label>
+
+    <button id="convertBtn"
+            class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-semibold transition">
+      Convert
+    </button>
+
+    <div id="output"
+         class="mt-4 p-4 glass rounded-lg text-center text-xl font-mono min-h-[3rem]">
+      <!-- result or error appears here -->
+    </div>
+  </div>
+
+  <script>
+    // Use a relative URL so it works both locally and on Vercel
+    const API_URL = "/api/convert";
+
+    document.getElementById("convertBtn").addEventListener("click", async () => {
+      const input = document.getElementById("timeInput").value;
+      const output = document.getElementById("output");
+      output.textContent = "⏳ Converting…";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ time: input })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          output.textContent = data.converted;
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        output.textContent = `❌ ${err.message}`;
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Python virtual environment
+env/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# VS Code settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# Misc
+*.log
+
+# Vercel deployment
+vercel

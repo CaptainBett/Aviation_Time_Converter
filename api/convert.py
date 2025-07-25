@@ -1,4 +1,7 @@
+from flask import Flask, request, jsonify
 import json
+
+app = Flask(__name__)
 
 def convert(time: str) -> str:
     s = time.replace(" ", "").lower()
@@ -13,7 +16,7 @@ def convert(time: str) -> str:
         h, m = int(h_str), int(m_str)
         if not (1 <= h <= 12 and 0 <= m < 60):
             raise ValueError("Hour must be 1–12, minute 0–59")
-        h = 0 if (period == "am" and h == 12) else (h if (period == "pm" and h == 12) else (h + 12 if period=="pm" else h))
+        h = 0 if (period == "am" and h == 12) else (h if (period == "pm" and h == 12) else (h + 12 if period == "pm" else h))
         return f"{h:02d}{m:02d} hrs"
 
     elif s.endswith("hrs"):
@@ -31,27 +34,14 @@ def convert(time: str) -> str:
     raise ValueError("Time must end with 'am', 'pm', or 'hrs'")
 
 
-# ✅ Vercel-compatible handler
-def handler(request):
+@app.route("/api/convert", methods=["POST"])
+def api_convert():
     try:
-        body_bytes = request.body
-        body = json.loads(body_bytes.decode("utf-8"))
-        time_str = body.get("time", "")
+        data = request.get_json()
+        time_str = data.get("time", "")
         result = convert(time_str)
-        return {
-            "statusCode": 200,
-            "headers": {"Content-Type": "application/json"},
-            "body": json.dumps({"success": True, "converted": result})
-        }
+        return jsonify(success=True, converted=result)
     except ValueError as e:
-        return {
-            "statusCode": 400,
-            "headers": {"Content-Type": "application/json"},
-            "body": json.dumps({"success": False, "error": str(e)})
-        }
+        return jsonify(success=False, error=str(e)), 400
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "headers": {"Content-Type": "application/json"},
-            "body": json.dumps({"success": False, "error": "Internal server error"})
-        }
+        return jsonify(success=False, error="Internal server error"), 500

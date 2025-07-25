@@ -17,3 +17,6 @@ Thumbs.db
 
 # Misc
 *.log
+
+# Vercel deployment
+vercel

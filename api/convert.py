@@ -31,10 +31,11 @@ def convert(time: str) -> str:
     raise ValueError("Time must end with 'am', 'pm', or 'hrs'")
 
 
-# Vercel's handler
+# ✅ Vercel-compatible handler
 def handler(request):
     try:
-        body = json.loads(request.body.decode())
+        body_bytes = request.body
+        body = json.loads(body_bytes.decode("utf-8"))
         time_str = body.get("time", "")
         result = convert(time_str)
         return {

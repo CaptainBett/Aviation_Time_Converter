@@ -56,5 +56,4 @@ def api_convert():
     except ValueError as e:
         return jsonify({"success": False, "error": str(e)}), 400
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
